@@ -12,10 +12,12 @@ app.use(express.json({ extended: false }));
 // Make a request to "http://localhost:5050" to see if it's running
 app.get("/", (req, res) => res.send("API Running"));
 
-// All the routes on ./routes/api/users are behind the main route /api/users
 app.use("/api/auth", require("./routes/api/auth"));
+// Relevant routes for users that are maes
 app.use("/api/maes", require("./routes/api/maes"));
+// Relevant routes for all users (students and maes)
 app.use("/api/users", require("./routes/api/users"));
+app.use("/api/tutoring", require("./routes/api/tutoring"));
 //app.use("/api/students", require("./routes/api/students"));
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

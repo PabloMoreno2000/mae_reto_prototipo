@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const TutoringSession = new mongoose.Schema({
+const TutoringSessionSchema = new mongoose.Schema({
   gives: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
@@ -13,4 +13,7 @@ const TutoringSession = new mongoose.Schema({
   },
 });
 
-module.exports = TutoringSession = mongoose.model("tutoringsession");
+module.exports = TutoringSession = mongoose.model(
+  "tutoringsession",
+  TutoringSessionSchema
+);
