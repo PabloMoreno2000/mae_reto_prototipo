@@ -6,7 +6,7 @@ const PORT = 5151;
 
 // Connect to the database
 connectDB();
-// Ask the server to accept JSON objects in the body of the POST/GET requests
+// Ask the server to accept JSON objects in the body of the POST requests
 app.use(express.json({ extended: false }));
 
 // Make a request to "http://localhost:5050" to see if it's running

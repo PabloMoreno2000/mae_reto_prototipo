@@ -72,4 +72,28 @@ router.get("/:maeId", async (req, res) => {
   }
 });
 
+// TODO: Change it to private
+// @route  PUT api/tutoring/:sessionId
+// @desct  Accepts a tutoring session with a subject and a heme
+// @access Public
+router.put("/:sessionId", async (req, res) => {
+  try {
+    const { subject, theme } = req.body;
+    const session = await TS.findById(req.params.sessionId);
+    if (!session) {
+      return res.status(404).json({ msg: "Tutoring session not found" });
+    }
+
+    // Put the info and save it in the DB
+    session.subject = subject;
+    session.theme = theme;
+    session.hasBeenAccepted = true;
+    await session.save();
+    res.json(session);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
+});
+
 module.exports = router;
