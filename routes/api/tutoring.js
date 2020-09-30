@@ -96,4 +96,23 @@ router.put("/:sessionId", async (req, res) => {
   }
 });
 
+// TODO: Change it to private
+// @route  DELETE api/tutoring/:sessionId
+// @desct  Delete a tutoring session
+// @access Public
+router.delete("/:sessionId", async (req, res) => {
+  try {
+    const session = await TS.findById(req.params.sessionId);
+    if (!session) {
+      return res.status(404).json({ msg: "Tutoring session not found" });
+    }
+
+    await session.remove();
+    res.json({ msg: "Tutoring session removed" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
+});
+
 module.exports = router;
