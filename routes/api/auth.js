@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Mae = require("../../models/Mae");
 const Student = require("../../models/Student");
+const Student = require("../../models/User");
 
 // By now this is a prototype, we'll be working just with one user
 let currentUser = {};
