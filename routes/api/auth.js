@@ -3,6 +3,7 @@ const router = express.Router();
 const Mae = require("../../models/Mae");
 const Student = require("../../models/Student");
 
+// By now this is a prototype, we'll be working just with one user
 let currentUser = {};
 let isMae = false;
 
