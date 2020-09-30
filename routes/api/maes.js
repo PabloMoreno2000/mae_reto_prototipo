@@ -10,7 +10,10 @@ const User = require("../../models/User");
 // @access public
 router.get("/", async (req, res) => {
   try {
-    const activeMaes = await User.find({ isMae: true, isActive: true });
+    const activeMaes = await User.find({
+      isMae: true,
+      "maeInfo.isActive": true,
+    }).select("-password");
     res.json(activeMaes);
   } catch (error) {
     console.error(error.message);
