@@ -67,12 +67,16 @@ router.post(
   }
 );
 
-// Get info of authenticated user
-router.get("/", (req, res) => {
-  res.send({
-    user,
-    isMae,
-  });
+// @route  GET api/auth
+// @desct  Get info of authenticated user
+// @access Public/non-authentication/no-token
+router.get("/", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
 });
-
 module.exports = router;
