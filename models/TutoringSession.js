@@ -15,6 +15,10 @@ const TutoringSessionSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  time: {
+    type: Date,
+    default: Date.now,
+  },
   // This info is set when accepting the session
   subject: {
     type: String,

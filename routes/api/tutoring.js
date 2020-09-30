@@ -5,7 +5,6 @@ const { check, validationResult } = require("express-validator/check");
 
 const User = require("../../models/User");
 const TS = require("../../models/TutoringSession");
-const { Mongoose } = require("mongoose");
 
 // TODO: Change to private, just student(receives) can do this
 // TODO: No user can register a session with itself
@@ -52,5 +51,25 @@ router.post(
     }
   }
 );
+
+// TODO: Change it to private
+// @route  GET api/tutoring/:maeId
+// @desct  Get all tutoring sessions from a certain mae
+// @access Public
+router.get("/:maeId", async (req, res) => {
+  try {
+    const student = await User.findById(req.params.maeId);
+    // have to find something and be a tutor
+    if (!student || !student.isMae) {
+      return res.status(400).send("Bad Request");
+    }
+
+    const sessions = await TS.find({ gives: req.params.maeId });
+    res.json(sessions);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
+});
 
 module.exports = router;
