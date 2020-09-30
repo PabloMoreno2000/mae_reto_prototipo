@@ -1,4 +1,5 @@
 const express = require("express");
+const auth = require("../../middleware/auth");
 const router = express.Router();
 // Exporting two objects
 //const { check, validationResult } = require("express-validator/check");
@@ -15,6 +16,21 @@ router.get("/", async (req, res) => {
       "maeInfo.isActive": true,
     }).select("-password");
     res.json(activeMaes);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// @route  PUT api/maes/setMyLink
+// @desct  Set the link of the authenticated mae
+// @access private
+router.put("/setMyLink", auth, async (req, res) => {
+  try {
+    const mae = await User.findById(req.user.id);
+    mae.maeInfo.link = req.body.link;
+    await mae.save();
+    res.json({ msg: "Link changed" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");
