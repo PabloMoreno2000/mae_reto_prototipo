@@ -13,7 +13,7 @@ const { check, validationResult } = require("express-validator/check");
 router.post(
   "/",
   [
-    check("matricula", "Favor de ingresar matrícula").isEmail(),
+    check("matricula", "Favor de ingresar matrícula").exists(),
     check("password", "Favor de ingresar contraseña").exists(),
   ],
   async (req, res) => {
