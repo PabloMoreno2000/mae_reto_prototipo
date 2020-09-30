@@ -15,6 +15,13 @@ const TutoringSessionSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  // This info is set when accepting the session
+  subject: {
+    type: String,
+  },
+  theme: {
+    type: String,
+  },
 });
 
 module.exports = TutoringSession = mongoose.model(
