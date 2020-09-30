@@ -10,13 +10,14 @@ const User = require("../../models/User");
 // @access public
 router.post("/", async (req, res) => {
   try {
+    matricula = req.body.matricula;
     let user = await User.findOne({ matricula });
     if (user) {
       return res.status(400).json({ errors: [{ msg: "Usuario ya existe" }] });
     }
 
-    let user = {};
-    user.matricula = req.body.matricula;
+    user = {};
+    user.matricula = matricula;
     user.password = req.body.password;
     user.campus = req.body.campus;
     user.isMae = req.body.isMae;
