@@ -10,6 +10,11 @@ const User = require("../../models/User");
 // @access public
 router.post("/", async (req, res) => {
   try {
+    let user = await User.findOne({ matricula });
+    if (user) {
+      return res.status(400).json({ errors: [{ msg: "Usuario ya existe" }] });
+    }
+
     let user = {};
     user.matricula = req.body.matricula;
     user.password = req.body.password;
