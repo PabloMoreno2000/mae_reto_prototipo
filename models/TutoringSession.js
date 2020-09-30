@@ -11,6 +11,10 @@ const TutoringSessionSchema = new mongoose.Schema({
     ref: "user",
     required: true,
   },
+  hasBeenAccepted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = TutoringSession = mongoose.model(
