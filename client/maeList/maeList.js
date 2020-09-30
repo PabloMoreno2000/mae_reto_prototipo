@@ -42,7 +42,7 @@ function createElement(element) {
   return elementsWithKey;
 }
 
-document.addEventListener("DOMContentLoaded", function (event) {
+function addMaesToList(maes) {
   for (let i = 0; i < maes.length; i++) {
     let mae = maes[i];
     let maeNodeElement = {
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             {
               elementType: "h5",
               attributes: { className: "mt-0 mb-1" },
-              text: `${mae.name}`,
+              text: `${mae.maeInfo.name}`,
             },
             {
               elementType: "button",
@@ -81,8 +81,19 @@ document.addEventListener("DOMContentLoaded", function (event) {
     let nodes = createElement(maeNodeElement);
     // On click, open anothert tab to the mae link
     nodes["button"].addEventListener("click", (event) => {
-      window.open(mae.link, "_blank");
+      window.open(mae.maeInfo.link, "_blank");
     });
     document.getElementById(maeList).append(nodes["main"]);
   }
+}
+
+document.addEventListener("DOMContentLoaded", function (event) {
+  $.ajax({
+    url: "http://localhost:5151/api/maes",
+    type: "GET",
+    success: function (result) {
+      addMaesToList(result);
+    },
+    error: function (_, textStatus, errorThrown) {},
+  });
 });

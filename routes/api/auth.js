@@ -58,6 +58,8 @@ router.post(
         (err, token) => {
           // If there's an error, throw it
           if (err) throw err;
+          res.cookie("x-auth-token", token, { maxAge: 900000, httpOnly: true });
+
           // Else, set in the json of the response this web token with
           // the user id that can be used for authentication after sign up
           res.json({ token });

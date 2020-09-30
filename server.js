@@ -1,13 +1,17 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const connectDB = require("./config/db");
 const app = express();
-
 const PORT = 5151;
 
+app.use(cors());
 // Connect to the database
 connectDB();
 // Ask the server to accept JSON objects in the body of the POST requests
 app.use(express.json({ extended: false }));
+//To work with cookies
+app.use(cookieParser());
 
 // Make a request to "http://localhost:5050" to see if it's running
 app.get("/", (req, res) => res.send("API Running"));
