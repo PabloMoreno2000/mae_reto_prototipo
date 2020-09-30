@@ -21,15 +21,15 @@ const UserSchema = new mongoose.Schema({
   maeInfo: {
     name: {
       type: String,
-      required: true,
+    },
+    major: {
+      type: String,
     },
     link: {
       type: String,
-      required: true,
     },
     isActive: {
       type: Boolean,
-      required: true,
     },
   },
 });

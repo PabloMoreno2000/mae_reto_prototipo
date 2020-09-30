@@ -1,10 +1,14 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const config = require("config");
+const User = require("../../models/User");
 
 // @route  POST api/users
 // @desct  Creates User
 // @access public
-router.post("/mae", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     let user = {};
     user.matricula = req.body.matricula;
@@ -15,9 +19,29 @@ router.post("/mae", async (req, res) => {
       user.maeInfo = req.body.maeInfo;
     }
 
+    // Encrypt password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
+
+    // Save user in the database
     const newUser = new User(user);
     await newUser.save();
-    res.json(newUser);
+
+    // Send a jwt for the new user
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+    jwt.sign(
+      payload,
+      config.get("jwtSecret"),
+      { expiresIn: 360000 },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token });
+      }
+    );
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");
