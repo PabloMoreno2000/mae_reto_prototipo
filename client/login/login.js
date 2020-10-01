@@ -15,8 +15,6 @@ $(document).ready(function () {
       }),
       contentType: "application/json; charset=utf-8",
       success: function (result) {
-        //console.log(result.token);
-        //document.cookie = `x-auth-token=${result.token}; Max-Age=2600000; Secure`;
         localStorage.setItem("x-auth-token", result.token);
         document.location.href = "../maeList/maeList.html";
       },

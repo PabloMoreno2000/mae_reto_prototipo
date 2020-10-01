@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
+const auth = require("../../middleware/auth");
 const User = require("../../models/User");
 
 // @route  POST api/users
@@ -48,6 +49,24 @@ router.post("/", async (req, res) => {
         res.json({ token });
       }
     );
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// Get info of the auth user
+// @route  GET api/users/me
+// @desct  Get current user
+// @access Private
+router.get("/me", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ msg: "Usuario no encontrado" });
+    }
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");
