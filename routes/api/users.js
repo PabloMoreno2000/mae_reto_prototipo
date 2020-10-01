@@ -55,13 +55,13 @@ router.post("/", async (req, res) => {
   }
 });
 
-// TODO: Get rid of this later
-// @route  GET api/users/:id
-// @desct  Get info of user :id
-// @access Public
-router.get("/:id", async (req, res) => {
+// Get info of the auth user
+// @route  GET api/users/me
+// @desct  Get current user
+// @access Private
+router.get("/me", auth, async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select("-password");
+    const user = await User.findById(req.user.id).select("-password");
     if (user) {
       res.json(user);
     } else {
@@ -73,13 +73,13 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Get info of the auth user
-// @route  GET api/users/me
-// @desct  Get current user
-// @access Private
-router.get("/me", auth, async (req, res) => {
+// TODO: Get rid of this later
+// @route  GET api/users/:id
+// @desct  Get info of user :id
+// @access Public
+router.get("/:id", async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.params.id).select("-password");
     if (user) {
       res.json(user);
     } else {

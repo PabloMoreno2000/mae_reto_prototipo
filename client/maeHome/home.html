@@ -63,7 +63,17 @@
         return elementsWithKey;
       }
 
+      async function getSubjects() {
+        let subjects = await $.ajax({
+          url: `https://dma.mty.itesm.mx/DMA/API/Materia/ReadAllMaterias.php`,
+          type: "GET",
+        });
+        return subjects;
+      }
+
       async function processSessions(sessions) {
+        const subjects = await getSubjects();
+
         for (let i = 0; i < sessions.length; i++) {
           let session = sessions[i];
           if (!session.hasBeenAccepted) {
@@ -98,7 +108,7 @@
                     },
                     {
                       elementType: "button",
-                      key: "accept",
+                      key: "cancel",
                       text: "Cancelar",
                       attributes: {
                         type: "button",
@@ -107,7 +117,7 @@
                     },
                     {
                       elementType: "button",
-                      key: "button",
+                      key: "accept",
                       text: "Aceptar",
                       attributes: {
                         type: "button",
@@ -120,7 +130,37 @@
             };
 
             let nodes = createElement(maeNodeElement);
+            // Add the element to the list of tutoring sessions
             document.getElementById(sess).append(nodes["main"]);
+
+            // If the session is accepted register it and remove it.
+            nodes["accept"].addEventListener("click", (event) => {
+              $.ajax({
+                url: `http://localhost:5151/api/tutoring/${session._id}`,
+                type: "PUT",
+                data: JSON.stringify({
+                  subject: "",
+                  theme: "",
+                }),
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {},
+                error: function (_, textStatus, errorThrown) {},
+              });
+
+              document.getElementById(sess).removeChild(nodes["main"]);
+            });
+
+            // If the session is canceled, remove it
+            nodes["cancel"].addEventListener("click", (event) => {
+              $.ajax({
+                url: `http://localhost:5151/api/tutoring/${session._id}`,
+                type: "DELETE",
+                success: function (result) {},
+                error: function (_, textStatus, errorThrown) {},
+              });
+
+              document.getElementById(sess).removeChild(nodes["main"]);
+            });
           }
         }
       }
