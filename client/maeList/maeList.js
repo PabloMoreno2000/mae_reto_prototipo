@@ -82,6 +82,21 @@ function addMaesToList(maes) {
     // On click, open anothert tab to the mae link
     nodes["button"].addEventListener("click", (event) => {
       window.open(mae.maeInfo.link, "_blank");
+      // Register the possible tutoring session
+      $.ajax({
+        url: "http://localhost:5151/api/tutoring",
+        type: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": localStorage.getItem("x-auth-token"),
+        },
+        data: JSON.stringify({
+          userIdGives: mae._id,
+        }),
+        success: function (result) {
+          console.log(result);
+        },
+      });
     });
     document.getElementById(maeList).append(nodes["main"]);
   }

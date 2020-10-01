@@ -4,6 +4,7 @@ const router = express.Router();
 const { check, validationResult } = require("express-validator/check");
 
 const User = require("../../models/User");
+const auth = require("../../middleware/auth");
 const TS = require("../../models/TutoringSession");
 
 // TODO: Change to private, just student(receives) can do this
@@ -13,10 +14,7 @@ const TS = require("../../models/TutoringSession");
 // @access Public
 router.post(
   "/",
-  [
-    check("userIdGives", "Falta MAE").not().isEmpty(),
-    check("userIdReceives", "Falta asesorado").not().isEmpty(),
-  ],
+  [auth, [check("userIdGives", "Falta MAE").not().isEmpty()]],
   async (req, res) => {
     try {
       // Check for errors
@@ -28,9 +26,9 @@ router.post(
       }
 
       // the id is the mongo id, NOT the student/tutor id
-      let { userIdGives, userIdReceives } = req.body;
+      let { userIdGives } = req.body;
       const tutor = await User.findById(userIdGives);
-      const student = await User.findById(userIdReceives);
+      const student = await User.findById(req.user.id);
 
       // Both have to exist and tutor has to be a Mae
       if (!tutor || !student || !tutor.isMae) {
@@ -40,7 +38,7 @@ router.post(
       // Save the tutoring session and send it in response
       const sessionInfo = {
         gives: userIdGives,
-        receives: userIdReceives,
+        receives: req.user.id,
       };
       session = new TS(sessionInfo);
       await session.save();
