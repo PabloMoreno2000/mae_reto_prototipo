@@ -55,6 +55,24 @@ router.post("/", async (req, res) => {
   }
 });
 
+// TODO: Get rid of this later
+// @route  GET api/users/:id
+// @desct  Get info of user :id
+// @access Public
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ msg: "Usuario no encontrado" });
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
+});
+
 // Get info of the auth user
 // @route  GET api/users/me
 // @desct  Get current user

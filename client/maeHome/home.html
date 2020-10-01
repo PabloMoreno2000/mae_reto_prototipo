@@ -19,6 +19,111 @@
     <script>
       const inputLink = "link-asesorias";
       const buttonChange = "change-link-button";
+      const sess = "lista-asesorias";
+
+      function createElement(element) {
+        let createElementHelper = (element, elementsWithKey) => {
+          // Create element node
+          let elem = document.createElement(element.elementType);
+          if (element["text"]) {
+            elem.append(document.createTextNode(element.text));
+          }
+
+          // Create the children of the node and append them to it
+          if (element["innerElements"]) {
+            for (let i = 0; i < element.innerElements.length; i++) {
+              let tempElement = createElementHelper(
+                element["innerElements"][i],
+                elementsWithKey
+              );
+              elem.append(tempElement);
+            }
+          }
+
+          // Set each attribute of the node like className, style, img, src, etc.
+          if (element["attributes"]) {
+            let attributes = element["attributes"];
+            for (let key in attributes) {
+              if (attributes.hasOwnProperty(key)) {
+                elem[key] = attributes[key];
+              }
+            }
+          }
+
+          // If there's a key "key", put the current node inside this array
+          if (element["key"]) {
+            elementsWithKey[element.key] = elem;
+          }
+
+          return elem;
+        };
+
+        elementsWithKey = [];
+        createElementHelper(element, elementsWithKey);
+        return elementsWithKey;
+      }
+
+      async function processSessions(sessions) {
+        for (let i = 0; i < sessions.length; i++) {
+          let session = sessions[i];
+          if (!session.hasBeenAccepted) {
+            // Get info of that user
+            let user = await $.ajax({
+              url: `http://localhost:5151/api/users/${session.receives}`,
+              type: "GET",
+            });
+
+            // Create a node for the list
+            let maeNodeElement = {
+              key: "main",
+              elementType: "li",
+              attributes: { className: "media", style: "margin-bottom: 1em;" },
+              innerElements: [
+                {
+                  elementType: "img",
+                  attributes: {
+                    className: "mr-3",
+                    src: "../resources/avatar.jpg",
+                    style: "weight:64px; height:64px;",
+                  },
+                },
+                {
+                  elementType: "div",
+                  attributes: { className: "media-body" },
+                  innerElements: [
+                    {
+                      elementType: "h5",
+                      attributes: { className: "mt-0 mb-1" },
+                      text: `${user.matricula}`,
+                    },
+                    {
+                      elementType: "button",
+                      key: "accept",
+                      text: "Cancelar",
+                      attributes: {
+                        type: "button",
+                        className: "btn btn-danger",
+                      },
+                    },
+                    {
+                      elementType: "button",
+                      key: "button",
+                      text: "Aceptar",
+                      attributes: {
+                        type: "button",
+                        className: "btn btn-primary",
+                      },
+                    },
+                  ],
+                },
+              ],
+            };
+
+            let nodes = createElement(maeNodeElement);
+            document.getElementById(sess).append(nodes["main"]);
+          }
+        }
+      }
 
       $(document).ready(function () {
         let mae = JSON.parse(localStorage.getItem("user"));
@@ -29,8 +134,9 @@
         $.ajax({
           url: `http://localhost:5151/api/tutoring/${mae._id}`,
           type: "GET",
-          success: function (sessions) {
+          success: async function (sessions) {
             console.log(sessions);
+            await processSessions(sessions);
           },
         });
 
