@@ -2,7 +2,7 @@ const buttonId = "log-button";
 const usernameId = "inputId";
 const passwordId = "inputPassword";
 
-async function isMae() {
+async function getCurrentUser() {
   let result;
 
   try {
@@ -14,7 +14,7 @@ async function isMae() {
       },
     });
 
-    return result.isMae;
+    return result;
   } catch (error) {
     console.error(error);
   }
@@ -34,9 +34,9 @@ $(document).ready(function () {
       contentType: "application/json; charset=utf-8",
       success: async function (result) {
         localStorage.setItem("x-auth-token", result.token);
-
-        let ismae = await isMae();
-        if (ismae) {
+        let user = await getCurrentUser();
+        localStorage.setItem("user", JSON.stringify(user));
+        if (user.isMae) {
           document.location.href = "../maeHome/home.html";
         } else {
           document.location.href = "../maeList/maeList.html";

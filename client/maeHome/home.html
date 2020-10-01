@@ -15,9 +15,32 @@
       integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
       crossorigin="anonymous"
     />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      const inputLink = "link-asesorias";
+      const buttonChange = "change-link-button";
 
-    <script src="../users.js"></script>
-    <scrpit src="./home.js"></scrpit>
+      $(document).ready(function () {
+        let mae = JSON.parse(localStorage.getItem("user"));
+        document
+          .getElementById("mae-name")
+          .append(document.createTextNode(mae.maeInfo.name));
+
+        $.ajax({
+          url: `http://localhost:5151/api/tutoring/${mae._id}`,
+          type: "GET",
+          success: function (sessions) {
+            console.log(sessions);
+          },
+        });
+
+        document
+          .getElementById(buttonChange)
+          .addEventListener("click", (event) => {
+            let mae = JSON.parse(localStorage.getItem("user"));
+          });
+      });
+    </script>
 
     <title>Home</title>
   </head>
@@ -102,6 +125,7 @@
                   id="change-link-button"
                   type="button"
                   class="btn btn-primary"
+                  data-dismiss="modal"
                 >
                   Guardar cambios
                 </button>
@@ -118,11 +142,6 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script
-      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-      crossorigin="anonymous"
-    ></script>
     <script
       src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
       integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
