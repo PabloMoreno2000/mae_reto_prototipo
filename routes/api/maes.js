@@ -23,14 +23,30 @@ router.get("/", async (req, res) => {
 });
 
 // @route  PUT api/maes/setMyLink
-// @desct  Set the link of the authenticated mae
+// @desct  Set the link of the authenticated mae and starts session
 // @access private
 router.put("/setMyLink", auth, async (req, res) => {
   try {
     const mae = await User.findById(req.user.id);
     mae.maeInfo.link = req.body.link;
+    mae.isActive = true;
     await mae.save();
     res.json({ msg: "Link changed" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// @route  PUT api/maes/endCurrentSession
+// @desct  isActive becomes false for auth user
+// @access private
+router.put("/endSession", auth, async (req, res) => {
+  try {
+    const mae = await User.findById(req.user.id);
+    mae.isActive = false;
+    await mae.save();
+    res.json({ msg: "Session ended" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");

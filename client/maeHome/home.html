@@ -171,6 +171,25 @@
           .getElementById("mae-name")
           .append(document.createTextNode(mae.maeInfo.name));
 
+        // Add listener to change the link
+        document
+          .getElementById("change-link-button")
+          .addEventListener("click", async (event) => {
+            const newLink = document.getElementById("link-asesorias").value;
+            console.log(newLink);
+            let response = await $.ajax({
+              url: "http://localhost:5151/api/maes/setMyLink",
+              type: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                "x-auth-token": localStorage.getItem("x-auth-token"),
+              },
+              data: JSON.stringify({
+                link: newLink,
+              }),
+            });
+          });
+
         $.ajax({
           url: `http://localhost:5151/api/tutoring/${mae._id}`,
           type: "GET",
