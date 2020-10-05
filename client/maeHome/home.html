@@ -203,6 +203,31 @@
           .getElementById("mae-name")
           .append(document.createTextNode(mae.maeInfo.name));
 
+        let setSessionState = (isActive) => {
+          const button = document.getElementById("mae-button");
+          if (isActive) {
+            button.className = "btn btn-danger";
+            button.textContent = "Cerrar sesión";
+            // Show the modal to change link
+            button.setAttribute("data-toggle", "modal");
+          } else {
+            button.className = "btn btn-info";
+            button.textContent = "Registrar asistencia";
+            // Don't show the modal to change link if the button is clicked again
+            button.setAttribute("data-toggle", "");
+            // Close current session
+            $.ajax({
+              url: "http://localhost:5151/api/maes/endSession",
+              type: "PUT",
+              headers: {
+                "x-auth-token": localStorage.getItem("x-auth-token"),
+              },
+            });
+          }
+          mae.maeInfo.isActive = isActive;
+        };
+
+        setSessionState(mae.maeInfo.isActive);
         // Add listener to change the link
         document
           .getElementById("change-link-button")
@@ -235,9 +260,15 @@
         });
 
         document
+          .getElementById("mae-button")
+          .addEventListener("click", (event) => {
+            setSessionState(!mae.maeInfo.isActive);
+          });
+
+        document
           .getElementById(buttonChange)
           .addEventListener("click", (event) => {
-            let mae = JSON.parse(localStorage.getItem("user"));
+            //let mae = JSON.parse(localStorage.getItem("user"));
           });
       });
     </script>
