@@ -187,6 +187,9 @@
               data: JSON.stringify({
                 link: newLink,
               }),
+              success: function (response) {
+                console.log(response);
+              },
             });
           });
 

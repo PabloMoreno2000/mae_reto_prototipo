@@ -29,7 +29,7 @@ router.put("/setMyLink", auth, async (req, res) => {
   try {
     const mae = await User.findById(req.user.id);
     mae.maeInfo.link = req.body.link;
-    mae.isActive = true;
+    mae.maeInfo.isActive = true;
     await mae.save();
     res.json({ msg: "Link changed" });
   } catch (error) {
@@ -44,7 +44,7 @@ router.put("/setMyLink", auth, async (req, res) => {
 router.put("/endSession", auth, async (req, res) => {
   try {
     const mae = await User.findById(req.user.id);
-    mae.isActive = false;
+    mae.maeInfo.isActive = false;
     await mae.save();
     res.json({ msg: "Session ended" });
   } catch (error) {
