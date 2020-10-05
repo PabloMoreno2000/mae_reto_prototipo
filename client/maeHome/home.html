@@ -15,7 +15,12 @@
       integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
       crossorigin="anonymous"
     />
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--Semantic ui-->
+    <link rel="stylesheet" type="text/css" href="../semantic.min.css" />
+    <script src="../semantic.min.js"></script>
+
     <script>
       const inputLink = "link-asesorias";
       const buttonChange = "change-link-button";
@@ -72,7 +77,17 @@
       }
 
       async function processSessions(sessions) {
-        const subjects = await getSubjects();
+        // Create inner html for search dropdown with all the subjects
+        let subjects = await getSubjects();
+        subjects = subjects.materias;
+        let subjectOptions = `<option value="">Selecciona una materia</option>`;
+
+        for (let key in subjects) {
+          if (subjects.hasOwnProperty(key)) {
+            subject = subjects[key];
+            subjectOptions += `<option value="${subject.clave}">${subject.nombre}</option>`;
+          }
+        }
 
         for (let i = 0; i < sessions.length; i++) {
           let session = sessions[i];
@@ -124,12 +139,24 @@
                         className: "btn btn-primary",
                       },
                     },
+                    {
+                      elementType: "select",
+                      key: "search-dropdown",
+                      attributes: {
+                        className: "ui search dropdown",
+                      },
+                    },
                   ],
                 },
               ],
             };
 
             let nodes = createElement(maeNodeElement);
+            // Add the options to the search dropdown
+            nodes["search-dropdown"].insertAdjacentHTML(
+              "beforeend",
+              subjectOptions
+            );
             // Add the element to the list of tutoring sessions
             document.getElementById(sess).append(nodes["main"]);
 
@@ -139,7 +166,7 @@
                 url: `http://localhost:5151/api/tutoring/${session._id}`,
                 type: "PUT",
                 data: JSON.stringify({
-                  subject: "",
+                  subject: nodes["search-dropdown"].value,
                   theme: "",
                 }),
                 contentType: "application/json; charset=utf-8",
