@@ -162,19 +162,24 @@
 
             // If the session is accepted register it and remove it.
             nodes["accept"].addEventListener("click", (event) => {
-              $.ajax({
-                url: `http://localhost:5151/api/tutoring/${session._id}`,
-                type: "PUT",
-                data: JSON.stringify({
-                  subject: nodes["search-dropdown"].value,
-                  theme: "",
-                }),
-                contentType: "application/json; charset=utf-8",
-                success: function (result) {},
-                error: function (_, textStatus, errorThrown) {},
-              });
+              const dropdownValue = nodes["search-dropdown"].value;
+              if (dropdownValue === "") {
+                alert("Favor de seleccionar una materia");
+              } else {
+                $.ajax({
+                  url: `http://localhost:5151/api/tutoring/${session._id}`,
+                  type: "PUT",
+                  data: JSON.stringify({
+                    subject: dropdownValue,
+                    theme: "",
+                  }),
+                  contentType: "application/json; charset=utf-8",
+                  success: function (result) {},
+                  error: function (_, textStatus, errorThrown) {},
+                });
 
-              document.getElementById(sess).removeChild(nodes["main"]);
+                document.getElementById(sess).removeChild(nodes["main"]);
+              }
             });
 
             // If the session is canceled, remove it
