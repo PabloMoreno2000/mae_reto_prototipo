@@ -208,21 +208,14 @@
           if (isActive) {
             button.className = "btn btn-danger";
             button.textContent = "Cerrar sesión";
-            // Show the modal to change link
-            button.setAttribute("data-toggle", "modal");
+            // Don't show the modal to change link if the button is clicked again
+            button.setAttribute("data-toggle", "");
           } else {
             button.className = "btn btn-info";
             button.textContent = "Registrar asistencia";
-            // Don't show the modal to change link if the button is clicked again
-            button.setAttribute("data-toggle", "");
-            // Close current session
-            $.ajax({
-              url: "http://localhost:5151/api/maes/endSession",
-              type: "PUT",
-              headers: {
-                "x-auth-token": localStorage.getItem("x-auth-token"),
-              },
-            });
+
+            // Show the modal to change link
+            button.setAttribute("data-toggle", "modal");
           }
           mae.maeInfo.isActive = isActive;
         };
@@ -245,6 +238,9 @@
                 link: newLink,
               }),
               success: function (response) {
+                // Start session
+                setSessionState(true);
+                localStorage.setItem("user", JSON.stringify(mae));
                 console.log(response);
               },
             });
@@ -262,7 +258,21 @@
         document
           .getElementById("mae-button")
           .addEventListener("click", (event) => {
-            setSessionState(!mae.maeInfo.isActive);
+            // To close session (to start is after inserting link on modal window)
+            if (mae.maeInfo.isActive) {
+              // Close current session
+              $.ajax({
+                url: "http://localhost:5151/api/maes/endSession",
+                type: "PUT",
+                headers: {
+                  "x-auth-token": localStorage.getItem("x-auth-token"),
+                },
+                success: function (_) {
+                  setSessionState(false);
+                  localStorage.setItem("user", JSON.stringify(mae));
+                },
+              });
+            }
           });
 
         document
